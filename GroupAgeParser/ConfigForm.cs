@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Drawing;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 
 namespace GroupAgeParser
@@ -10,25 +11,31 @@ namespace GroupAgeParser
         public ConfigForm()
         {
             InitializeComponent();
-            SetListViewPosition(keyListView);
+            AllDesignChanges();
             SetTextBoxPosition(valueInput);
-            FillKeyListView(keyListView);
+            FillKeyComboBox(keysBoxList);
         }
 
-        public void FillKeyListView(ListView actualListView)
+        public void AllDesignChanges()
         {
-            actualListView.View = View.List;
+            this.BackColor = Color.FromArgb(93, 93, 93);
+            foreach (Control childControl in this.Controls)
+            {
+                int x = (ClientSize.Width - childControl.Width) / 2;
+                childControl.Location = new Point(x, childControl.Location.Y);
+            }
+        }
+
+        public void FillKeyComboBox(ComboBox actualComboBox)
+        {
             foreach(SettingsProperty sp in Properties.Settings.Default.Properties)
             {
                 if (sp.Name != "parseMode")
                 {
-                    ListViewItem newItem = new ListViewItem
-                    {
-                        Text = sp.Name
-                    };
-                    actualListView.Items.Add(newItem);
+                    actualComboBox.Items.Add(sp.Name);
                 }
             }
+            actualComboBox.SelectedIndex = 0;
         }
 
         public void UpdateKey(string Key, string nValue)
@@ -36,12 +43,6 @@ namespace GroupAgeParser
 
             Properties.Settings.Default[Key] = Convert.ChangeType(nValue, Properties.Settings.Default[Key].GetType());
             Properties.Settings.Default.Save();
-        }
-
-        public void SetListViewPosition(ListView actualListView)
-        {
-            int x = (ClientSize.Width - actualListView.Width) / 2;
-            actualListView.Location = new Point(x, actualListView.Location.Y);
         }
 
         public void SetTextBoxPosition(TextBox actualTextBox)
@@ -52,11 +53,14 @@ namespace GroupAgeParser
 
         private void saveConfigButton_Click(object sender, EventArgs e)
         {
-            string KeyInput = keyListView.SelectedItems[0].Text;
+            string KeyInput = keysBoxList.SelectedItem.ToString();
             string ValueInput = valueInput.Text;
             try
             {
-                UpdateKey(KeyInput, ValueInput);
+                if (keysBoxList.SelectedIndex != -1)
+                {
+                    UpdateKey(KeyInput, ValueInput);
+                }
             }
             catch (SettingsPropertyNotFoundException)
             {
@@ -68,7 +72,7 @@ namespace GroupAgeParser
         {
             try
             {
-                string KeyInput = keyListView.SelectedItems[0].Text;
+                string KeyInput = keysBoxList.SelectedItem.ToString();
                 valueInput.Clear();
                 valueInput.Text = Properties.Settings.Default[KeyInput].ToString();
             }

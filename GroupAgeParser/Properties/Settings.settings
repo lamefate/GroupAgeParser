@@ -6,7 +6,7 @@
       <Value Profile="(Default)">fast</Value>
     </Setting>
     <Setting Name="token" Type="System.String" Scope="User">
-      <Value Profile="(Default)">none</Value>
+      <Value Profile="(Default)">c0aa63d4c0aa63d4c0aa63d4dec3b9ec0bcc0aac0aa63d4a492469f8bb0960f23c1f4d2</Value>
     </Setting>
     <Setting Name="aTimeout" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">5</Value>

@@ -11,6 +11,7 @@ using VkNet.Model;
 using VkNet.Model.RequestParams;
 using VkNet.Utils;
 using System.IO;
+using System.Diagnostics;
 
 namespace GroupAgeParser
 {
@@ -20,18 +21,14 @@ namespace GroupAgeParser
         ulong Offset = 0;
         int ActualYear = DateTime.Now.Year;
         DateTime StartTime;
+        Thread SecondThread;
         List<long> SkippedUsersId = new List<long>();
         int ParsedUsers = 0, SkippedUsers = 0, ParsedFriends = 0, FriendsYears = 0, UsersYears = 0;
         public MainForm()
         {
             InitializeComponent();
+            AllDesignChanges();
             consoleTextBox.AppendText("-> Welcome to GroupAgeParser.\n");
-            SetRadioButtonPosition(fastMode);
-            SetRadioButtonPosition(detailedMode);
-            SetTextBoxPosition(consoleTextBox);
-            SetButtonPosition(parseButton);
-            SetButtonPosition(configButton);
-            SetButtonPosition(helpButton);
             CreateFolders();
         }
 
@@ -222,22 +219,28 @@ namespace GroupAgeParser
             }
         }
 
-        public void SetRadioButtonPosition(RadioButton actualRadioButton)
+        public void AllDesignChanges()
         {
-            int x = (ClientSize.Width - actualRadioButton.Width) / 2;
-            actualRadioButton.Location = new Point(x, actualRadioButton.Location.Y);
+            this.BackColor = Color.FromArgb(93, 93, 93);
+            parseButton.BackColor = Color.FromArgb(93, 93, 93);
+            stopButton.BackColor = Color.FromArgb(93, 93, 93);
+            configButton.BackColor = Color.FromArgb(93, 93, 93);
+            helpButton.BackColor = Color.FromArgb(93, 93, 93);
         }
 
-        public void SetTextBoxPosition(RichTextBox actualRichTextBox)
+        private void stopButton_Click(object sender, EventArgs e)
         {
-            int x = (ClientSize.Width - actualRichTextBox.Width) / 2;
-            actualRichTextBox.Location = new Point(x, actualRichTextBox.Location.Y);
+            if (SecondThread.IsAlive)
+            {
+                SecondThread.Abort();
+                consoleTextBox.Clear();
+                consoleTextBox.AppendText("-> data processing has been stopped");
+            }
         }
 
-        public void SetButtonPosition(System.Windows.Forms.Button actualButton)
+        private void helpButton_Click(object sender, EventArgs e)
         {
-            int x = (ClientSize.Width - actualButton.Width) / 2;
-            actualButton.Location = new Point(x, actualButton.Location.Y);
+            Process.Start("https://lamefate.github.io/GroupAgeParser");
         }
 
         private void fastMode_CheckedChanged(object sender, EventArgs e)
@@ -272,7 +275,7 @@ namespace GroupAgeParser
             {
                 try
                 {
-                    Thread SecondThread = new Thread(() => ParseFunction(Properties.Settings.Default["parseMode"].ToString()));
+                    SecondThread = new Thread(() => ParseFunction(Properties.Settings.Default["parseMode"].ToString()));
                     SecondThread.Start();
                 }
                 catch (InvalidParameterException)

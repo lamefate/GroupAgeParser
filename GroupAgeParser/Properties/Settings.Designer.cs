@@ -37,7 +37,7 @@ namespace GroupAgeParser.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("none")]
+        [global::System.Configuration.DefaultSettingValueAttribute("c0aa63d4c0aa63d4c0aa63d4dec3b9ec0bcc0aac0aa63d4a492469f8bb0960f23c1f4d2")]
         public string token {
             get {
                 return ((string)(this["token"]));
